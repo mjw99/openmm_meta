@@ -39,8 +39,8 @@ val_index = [atom.index for atom in pdb.topology.atoms() if (atom.residue.id in 
 iso_index = [atom.index for atom in pdb.topology.atoms() if (atom.residue.id in ['458'] and atom.residue.chain.id == 'B' and atom.name in ['N','CA','C','O'])]
 
 # http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCentroidBondForce.html
-
-force = mm.CustomCentroidBondForce(2, "distance(g1, g2)")
+# A Gaussian energy impulse centered at a running value of the CV is periodically added to the total potential energy of the system
+force = mm.CustomCentroidBondForce(2, "distance(g1, g2)/2")
 
 force.addGroup(val_index)
 force.addGroup(iso_index)
@@ -63,7 +63,7 @@ meta = app.Metadynamics(system=system,
                         variables=[V340AI458B],
                         temperature=310.0,
                         biasFactor=5.0,
-                        height=1 * unit.kilocalories_per_mole,
+                        height=0.01 * unit.kilocalories_per_mole,
                         frequency=45)
 
 
