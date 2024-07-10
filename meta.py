@@ -40,7 +40,7 @@ iso_index = [atom.index for atom in pdb.topology.atoms() if (atom.residue.id in 
 
 # http://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCentroidBondForce.html
 # A Gaussian energy impulse centered at a running value of the CV is periodically added to the total potential energy of the system
-force = mm.CustomCentroidBondForce(2, "distance(g1, g2)/2")
+force = mm.CustomCentroidBondForce(2, "distance(g1, g2)")
 
 force.addGroup(val_index)
 force.addGroup(iso_index)
