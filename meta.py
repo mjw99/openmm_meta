@@ -109,3 +109,23 @@ plot.savefig('meta.png')
 
 print(meta.getCollectiveVariables(simulation))
 
+
+# Distance:
+
+traj = md.load("meta.h5")
+
+V340A = traj.top.select('resSeq 340 and name CA')[0]
+I458B = traj.top.select('resSeq 458 and name CA')[0]
+
+dist = md.compute_distances(traj, [[V340A,I458B]], periodic=True, opt=True)
+
+plot, ax = plot.subplots()
+ax.plot(dist, alpha=0.5)
+
+ax.set_xlabel("time/ps")
+ax.set_ylabel("distance / nm")
+ax.set_title("V340A CA / I458B CA distance")
+ax.legend()
+
+plot.savefig('dist.png')
+
