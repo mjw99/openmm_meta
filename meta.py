@@ -28,6 +28,7 @@ protein_indices = traj.top.select('protein')
 system = forcefield.createSystem(pdb.topology,
                                  nonbondedMethod=app.PME, 
                                  nonbondedCutoff=1*unit.nanometer,
+                                 constraints=app.HBonds,
                                  removeCMMotion=False)
 
 # Create the CV: V340A–I458B
