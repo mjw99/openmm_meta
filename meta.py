@@ -94,6 +94,9 @@ simulation.reporters.append(app.StateDataReporter("meta.log", 10000, step=True,
 
 meta.step(simulation, total_steps)
 
+# Close the HDF5 file
+simulation.reporters[0].close()
+
 
 # The result is returned as a N-dimensional NumPy array, where N is the number of collective
 # variables.  The values are in kJ/mole.  The i'th position along an axis corresponds to
