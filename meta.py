@@ -90,7 +90,7 @@ simulation.reporters.append(mdtraj.reporters.HDF5Reporter('meta.h5', 10000, atom
 # 20,000,000 steps @ 2fs == 40 ns ~3 h on a v100
 total_steps=20000000
 
-simulation.reporters.append(app.StateDataReporter("meta.log", 10000, step=True,
+simulation.reporters.append(app.StateDataReporter("meta.log", 10000, step=True, time=True,
         potentialEnergy=True, temperature=True, progress=True, remainingTime=True, totalSteps=total_steps, separator='\t'))
 
 meta.step(simulation, total_steps)
