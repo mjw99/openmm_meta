@@ -55,7 +55,7 @@ force.setUsesPeriodicBoundaryConditions(True)
 V340AI458B = app.BiasVariable(force=force,
                               minValue=6 * unit.angstrom, 
                               maxValue=30 * unit.angstrom,
-                              biasWidth=0.05 * unit.angstrom, 
+                              biasWidth=0.1 * unit.angstrom, 
                               periodic=False)
 #http://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.Metadynamics.html
 #
@@ -64,8 +64,8 @@ meta = app.Metadynamics(system=system,
                         variables=[V340AI458B],
                         temperature=310.0,
                         biasFactor=5.0,
-                        height=0.01 * unit.kilocalories_per_mole,
-                        frequency=45)
+                        height=150 * unit.kilocalories_per_mole,
+                        frequency=5)
 
 
 # Set up the integrator and simulation
@@ -84,15 +84,16 @@ simulation.context.setPositions(pdb.positions)
 # Hack to clean up after restart
 mm.LocalEnergyMinimizer.minimize(simulation.context)
 
-simulation.reporters.append(mdtraj.reporters.HDF5Reporter('meta.h5', 10000, atomSubset=protein_indices))
+simulation.reporters.append(mdtraj.reporters.HDF5Reporter('meta.h5', 1, atomSubset=protein_indices))
 
 # Total steps
 # 20,000,000 steps @ 2fs == 40 ns ~3 h on a v100
-total_steps=20000000
+total_steps=1000
 
-simulation.reporters.append(app.StateDataReporter("meta.log", 10000, step=True, time=True,
+simulation.reporters.append(app.StateDataReporter("meta.log", 1, step=True, time=True,
         potentialEnergy=True, temperature=True, progress=True, remainingTime=True, totalSteps=total_steps, separator='\t'))
 
+print(meta.getCollectiveVariables(simulation))
 meta.step(simulation, total_steps)
 
 # Close the HDF5 file
