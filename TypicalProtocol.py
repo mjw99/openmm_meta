@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Typical AMBER MD protocol
-# 100 ns, HMR, 5 fs time step
+# 1 ns, HMR, 5 fs time step
 
 
 # See: http://docs.openmm.org/8.1.0/api-python/index.html
@@ -66,7 +66,7 @@ forceField = app.ForceField('amber14-all.xml','./amber14/tip3p.xml')
 modeller = app.Modeller(pdb.topology, pdb.positions)
 
 # Add TIP3P solvent
-modeller.addSolvent(forceField, model='tip3p', padding=16*unit.angstrom)
+modeller.addSolvent(forceField, model='tip3p', padding=50*unit.angstrom)
 
 app.PDBFile.writeFile(modeller.topology,
                       modeller.positions,
@@ -192,10 +192,7 @@ simulation.reporters = []
 
 # Get the index of protein atoms only,
 # to enable stripping of water and counter ions in the production trajectory
-traj = mdtraj.load('density_final.pdb')
-#top, bonds = traj.top.to_dataframe()
-#protein_indices = np.where(top.resName[(top.resName != "HOH" ) & (top.resName != "Na")])[0]
-protein_indices = traj.top.select('resname "LIG" or protein')
+protein_indices=[atom.index for atom in modeller.topology.atoms() if ("protein")]
 
 
 ####################################
@@ -205,7 +202,7 @@ protein_indices = traj.top.select('resname "LIG" or protein')
 # HMR
 print("100 ns Production under NPT, HMR, 5fs ")
 friction = 1*(1/unit.picosecond)
-dt = 6*unit.femtoseconds
+dt = 5*unit.femtoseconds
 constraints = app.AllBonds
 hydrogenMass = 4*unit.amu
 
@@ -239,7 +236,7 @@ simulation.reporters.append(mdtraj.reporters.HDF5Reporter(
 # mdconvert -f -o production.pdb production.h5
 
 
-# 20,000,000 steps @ 5fs == 10ns
+# 2,000,000 steps @ 5fs == 1ns
 simulation.step(2000000)
 
 # Save the positions
