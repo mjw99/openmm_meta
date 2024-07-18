@@ -19,9 +19,7 @@ forcefield = app.ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
 # Get the index of protein atoms only,
 # to enable stripping of water and counter ions in the production trajectory
-traj = mdtraj.load('production_final.pdb')
-protein_indices = traj.top.select('protein')
-
+protein_indices=[atom.index for atom in pdb.topology.atoms() if ("protein")]
 
 
 # Prepare the system
@@ -93,7 +91,6 @@ total_steps=1000
 simulation.reporters.append(app.StateDataReporter("meta.log", 1, step=True, time=True,
         potentialEnergy=True, temperature=True, progress=True, remainingTime=True, totalSteps=total_steps, separator='\t'))
 
-print(meta.getCollectiveVariables(simulation))
 meta.step(simulation, total_steps)
 
 # Close the HDF5 file
@@ -103,17 +100,12 @@ simulation.reporters[0].close()
 # The result is returned as a N-dimensional NumPy array, where N is the number of collective
 # variables.  The values are in kJ/mole.  The i'th position along an axis corresponds to
 # minValue + i*(maxValue-minValue)/gridWidth.
-print(meta.getFreeEnergy())
 
 plot.plot(meta.getFreeEnergy())
 plot.savefig('meta.png')
 
 
-print(meta.getCollectiveVariables(simulation))
-
-
 # Distance:
-
 traj = md.load("meta.h5")
 
 V340A = traj.top.select('resSeq 340 and name CA')[0]
@@ -127,7 +119,6 @@ ax.plot(dist, alpha=0.5)
 ax.set_xlabel("time/ps")
 ax.set_ylabel("distance / nm")
 ax.set_title("V340A CA / I458B CA distance")
-ax.legend()
 
 plot.savefig('dist.png')
 
