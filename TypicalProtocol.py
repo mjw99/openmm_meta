@@ -192,7 +192,7 @@ simulation.reporters = []
 
 # Get the index of protein atoms only,
 # to enable stripping of water and counter ions in the production trajectory
-protein_indices=[atom.index for atom in modeller.topology.atoms() if ("protein")]
+protein_indices=[atom.index for atom in modeller.topology.atoms() if (not atom.residue.name in "HOH")]
 
 
 ####################################

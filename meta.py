@@ -19,8 +19,7 @@ forcefield = app.ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
 # Get the index of protein atoms only,
 # to enable stripping of water and counter ions in the production trajectory
-protein_indices=[atom.index for atom in pdb.topology.atoms() if ("protein")]
-
+protein_indices=[atom.index for atom in pdb.topology.atoms() if (not atom.residue.name in "HOH")]
 
 # Prepare the system
 system = forcefield.createSystem(pdb.topology,
