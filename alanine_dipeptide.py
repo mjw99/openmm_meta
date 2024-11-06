@@ -29,7 +29,7 @@ pdb = PDBFile('alanine-dipeptide-explicit.pdb')
 #for atom in pdb.topology.atoms():
 #    print(atom)
 
-forcefield = ForceField('amber14-all.xml', 'amber14/spce.xml')
+forcefield = ForceField('amber14-all.xml', 'amber14/tip3p.xml')
 system = forcefield.createSystem(pdb.topology, nonbondedMethod=PME, constraints=HBonds)
 
 # Define collective variables for phi and psi.
