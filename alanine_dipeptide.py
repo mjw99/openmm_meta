@@ -34,6 +34,7 @@ system = forcefield.createSystem(pdb.topology, nonbondedMethod=PME, constraints=
 
 # Define collective variables for phi and psi.
 
+# https://docs.openmm.org/latest/api-python/generated/openmm.openmm.CustomCVForce.html
 cv1 = CustomTorsionForce('theta')
 cv1.addTorsion(1, 6, 8, 14)
 phi = BiasVariable(cv1, -np.pi, np.pi, 0.5, True)
@@ -46,6 +47,7 @@ psi = BiasVariable(cv2, -np.pi, np.pi, 0.5, True)
 
 #meta = Metadynamics(system, [phi, psi], 300.0*kelvin, 1000.0*kelvin, 1.0*kilojoules_per_mole, 100)
 
+# https://docs.openmm.org/latest/api-python/generated/openmm.app.metadynamics.Metadynamics.html
 meta = Metadynamics(system=system,
                         variables=[phi, psi],
                         temperature=300.0,
